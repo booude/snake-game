@@ -4,6 +4,10 @@ const canvas = document.querySelector("canvas")
 // Obtém o contexto de desenho 2D do canvas
 const ctx = canvas.getContext("2d")
 
+// Seleciona os elementos de score e highscore
+const scoreElement = document.getElementById("score");
+const highscoreElement = document.getElementById("highscore");
+
 // Cria um elemento de áudio para reproduzir o som de comer a maçã
 const audioEat = new Audio('../assets/eat.ogg')
 
@@ -45,6 +49,12 @@ const apple = {
 
 // Variáveis para controle da direção da cobra e do loop principal do jogo
 let direction, loopId
+
+// Função para atualizar o score e highscore
+const updateScore = (score, highscore) => {
+    scoreElement.textContent = `Score: ${score}`;
+    highscoreElement.textContent = `Highscore: ${highscore}`;
+};
 
 // Função para desenhar a maçã na tela
 const drawApple = () => {
@@ -111,11 +121,7 @@ const drawGrid = () => {
         ctx.stroke()
     }
 
-    // Desenha a pontuação atual e a pontuação máxima
-    ctx.font = "24px Arial"
-    ctx.fillStyle = "white"
-    ctx.fillText(`Score: ${snake.length - 2}`, 8, 23)
-    ctx.fillText(`Highscore: ${localStorage.getItem('highscore') || 0}`, 8, 52)
+    updateScore(snake.length - 2, localStorage.getItem('highscore') || 0);
 }
 
 // Função para obter o highscore armazenado no localStorage
