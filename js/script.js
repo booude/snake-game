@@ -188,6 +188,10 @@ const resetGame = () => {
     // Reinicia o loop do jogo
     gameLoop();
 }
+
+// Variável para armazenar o intervalo inicial do jogo
+let initialInterval = 100;
+
 // Função principal do jogo
 const gameLoop = () => {
     clearInterval(loopId);
@@ -202,10 +206,14 @@ const gameLoop = () => {
     moveSnake();
     checkEat();
     checkCollision();
+
+    // Calcula a velocidade com base no tamanho da cobra
+    const interval = Math.max(initialInterval - (snake.length * 1.2), 50);
+
     // Loop para atualizar o jogo
     loopId = setTimeout(() => {
-        gameLoop()
-    }, 100)
+        gameLoop();
+    }, interval);
 }
 
 // Reinicia o loop do jogo
