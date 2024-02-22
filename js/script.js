@@ -109,6 +109,15 @@ const drawGrid = () => {
         ctx.lineTo(0, i)
         ctx.lineTo(600, i)
         ctx.stroke()
+    }
+
+    // Desenha a pontuação atual e a pontuação máxima
+    ctx.font = "24px Arial"
+    ctx.fillStyle = "white"
+    ctx.fillText(`Score: ${snake.length - 2}`, 8, 23)
+    ctx.fillText(`Highscore: ${localStorage.getItem('highscore') || 0}`, 8, 52)
+}
+
 // Função para obter o highscore armazenado no localStorage
 const getHighscore = () => {
     return localStorage.getItem('highscore') || 0;
@@ -143,6 +152,7 @@ const checkEat = () => {
             localStorage.setItem('highscore', currentScore)
         }
 
+    }
 }
 
 // Função para verificar colisões (com a parede ou a própria cobra)
