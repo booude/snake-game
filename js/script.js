@@ -138,10 +138,15 @@ const checkCollision = () => {
 
 }
 
+// Função chamada quando o jogo acaba
 const gameOver = () => {
-    direction = undefined
-}
+    direction = undefined;
 
+    // Reinicia o jogo após um pequeno atraso
+    setTimeout(() => {
+        resetGame();
+    }, 1000); // Espera 1 segundo antes de reiniciar o jogo
+}
 const gameLoop = () => {
     clearInterval(loopId)
 
