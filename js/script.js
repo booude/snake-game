@@ -147,6 +147,20 @@ const gameOver = () => {
         resetGame();
     }, 1000); // Espera 1 segundo antes de reiniciar o jogo
 }
+
+// Função para resetar o estado do jogo
+const resetGame = () => {
+    // Reseta a posição inicial da cobra e da maçã
+    snake.length = 2; // Cobra volta ao tamanho inicial
+    snake[0] = { x: 270, y: 270 };
+    snake[1] = { x: 300, y: 270 };
+    apple.x = randomPosition();
+    apple.y = randomPosition();
+    apple.color = randomColor();
+
+    // Reinicia o loop do jogo
+    gameLoop();
+}
 const gameLoop = () => {
     clearInterval(loopId)
 
