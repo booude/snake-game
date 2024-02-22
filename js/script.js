@@ -1,24 +1,33 @@
+// Seleciona o elemento canvas do HTML
 const canvas = document.querySelector("canvas")
+
+// Obtém o contexto de desenho 2D do canvas
 const ctx = canvas.getContext("2d")
 
+// Cria um elemento de áudio para reproduzir o som de comer a maçã
 const audioEat = new Audio('../assets/eat.ogg')
 
+// Tamanho dos elementos (cobra e maçã) no jogo
 const size = 30
+
+// Array que representa a cobra inicialmente com duas partes
 const snake = [
     { x: 270, y: 270 },
     { x: 300, y: 270 },
-
 ]
 
+// Função para gerar um número aleatório dentro de um intervalo
 const randomNumber = (min, max) => {
     return Math.round(Math.random() * (max - min) + min)
 }
 
+// Função para gerar uma posição aleatória para a maçã
 const randomPosition = (min, max) => {
     const number = randomNumber(0, canvas.width - size)
     return Math.round(number / 30) * 30
 }
 
+// Função para gerar uma cor aleatória em formato RGB
 const randomColor = () => {
     const red = randomNumber(0, 225)
     const green = randomNumber(0, 225)
@@ -27,16 +36,18 @@ const randomColor = () => {
     return `rgb(${red}, ${green}, ${blue})`
 }
 
+// Objeto que representa a maçã no jogo
 const apple = {
     x: randomPosition(),
     y: randomPosition(),
     color: randomColor()
 }
 
+// Variáveis para controle da direção da cobra e do loop principal do jogo
 let direction, loopId
 
+// Função para desenhar a maçã na tela
 const drawApple = () => {
-
     const { x, y, color } = apple
 
     ctx.shadowColor = color
@@ -46,18 +57,20 @@ const drawApple = () => {
     ctx.shadowBlur = 0
 }
 
+// Função para desenhar a cobra na tela
 const drawSnake = () => {
-    ctx.fillStyle = "#009929"
+    ctx.fillStyle = "#009929" // Cor do corpo da cobra
 
     snake.forEach((position, index) => {
         if (index == snake.length - 1) {
-            ctx.fillStyle = "#006414"
+            ctx.fillStyle = "#006414" // Cor da cabeça da cobra
         }
 
         ctx.fillRect(position.x, position.y, size, size)
     })
 }
 
+// Função para mover a cobra
 const moveSnake = () => {
     if (!direction) return
 
@@ -82,9 +95,10 @@ const moveSnake = () => {
     snake.shift()
 }
 
+// Função para desenhar a grade do jogo
 const drawGrid = () => {
     ctx.lineWidth = 1.5
-    ctx.strokeStyle = "white"
+    ctx.strokeStyle = "white" // Cor das linhas da grade
 
     for (let i = 30; i < canvas.width; i += 30) {
         ctx.beginPath()
@@ -99,20 +113,25 @@ const drawGrid = () => {
 const getHighscore = () => {
     return localStorage.getItem('highscore') || 0;
 }
+
+// Função para verificar se a cobra comeu a maçã
 const checkEat = () => {
     const head = snake.at(-1)
     if (head.x == apple.x && head.y == apple.y) {
         snake.push(head)
         audioEat.play()
 
+        // Gera uma nova posição para a maçã
         let x = randomPosition()
         let y = randomPosition()
 
+        // Verifica se a nova posição da maçã não está dentro da cobra
         while (snake.find((position) => position.x == x && position.y == y)) {
             x = randomPosition()
             y = randomPosition()
         }
 
+        // Define a nova posição e cor da maçã
         apple.x = x
         apple.y = y
         apple.color = randomColor()
@@ -126,20 +145,24 @@ const checkEat = () => {
 
 }
 
+// Função para verificar colisões (com a parede ou a própria cobra)
 const checkCollision = () => {
     const head = snake.at(-1)
     const canvasLimit = canvas.width - size
     const neckIndex = snake.length - 2
 
+    // Verifica colisão com a parede
     const wallCollision = head.x < 0 || head.x > canvasLimit || head.y < 0 || head.y > canvasLimit
+
+    // Verifica colisão com o corpo da cobra
     const selfCollision = snake.find((position, index) => {
         return index < neckIndex && position.x == head.x && position.y == head.y
     })
 
+    // Se houver colisão, o jogo acaba
     if (wallCollision || selfCollision) {
         gameOver()
     }
-
 }
 
 // Função chamada quando o jogo acaba
@@ -165,24 +188,30 @@ const resetGame = () => {
     // Reinicia o loop do jogo
     gameLoop();
 }
+// Função principal do jogo
 const gameLoop = () => {
-    clearInterval(loopId)
+    clearInterval(loopId);
 
-    ctx.clearRect(0, 0, 600, 600)
-    drawGrid()
-    drawApple()
-    drawSnake()
-    moveSnake()
-    checkEat()
-    checkCollision()
+    // Limpa o canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Desenha a grade, maçã, cobra, etc.
+    drawGrid();
+    drawApple();
+    drawSnake();
+    moveSnake();
+    checkEat();
+    checkCollision();
+    // Loop para atualizar o jogo
     loopId = setTimeout(() => {
         gameLoop()
     }, 100)
 }
 
+// Reinicia o loop do jogo
 gameLoop()
 
+// Evento de teclado para controlar a direção da cobra
 document.addEventListener("keydown", ({ key }) => {
     if (key == "ArrowRight" && direction != "left") {
         direction = "right"
