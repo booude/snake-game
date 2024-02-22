@@ -95,11 +95,10 @@ const drawGrid = () => {
         ctx.lineTo(0, i)
         ctx.lineTo(600, i)
         ctx.stroke()
-
-    }
-
+// Função para obter o highscore armazenado no localStorage
+const getHighscore = () => {
+    return localStorage.getItem('highscore') || 0;
 }
-
 const checkEat = () => {
     const head = snake.at(-1)
     if (head.x == apple.x && head.y == apple.y) {
@@ -118,7 +117,12 @@ const checkEat = () => {
         apple.y = y
         apple.color = randomColor()
 
-    }
+        // Atualiza o highscore se necessário
+        const currentScore = snake.length - 2
+        const highscore = getHighscore();
+        if (currentScore > highscore) {
+            localStorage.setItem('highscore', currentScore)
+        }
 
 }
 
