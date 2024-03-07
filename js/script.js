@@ -8,8 +8,10 @@ const ctx = canvas.getContext("2d")
 const scoreElement = document.getElementById("score");
 const highscoreElement = document.getElementById("highscore");
 
+const audioBack = new Audio('../assets/sound_background.mp3')
+
 // Cria um elemento de áudio para reproduzir o som de comer a maçã
-const audioEat = new Audio('../assets/eat.ogg')
+const audioEat = new Audio('../assets/eat.mp3')
 
 // Tamanho dos elementos (cobra e maçã) no jogo
 const size = 30
@@ -62,14 +64,19 @@ const drawApple = () => {
 
     ctx.shadowColor = color
     ctx.shadowBlur = 7
+    ctx.strokeStyle = color
     ctx.fillStyle = color
     ctx.fillRect(x, y, size, size)
     ctx.shadowBlur = 0
 }
 
+
 // Função para desenhar a cobra na tela
 const drawSnake = () => {
     ctx.fillStyle = "#009929" // Cor do corpo da cobra
+    ctx.shadowColor = "#006414"
+    ctx.shadowBlur = 7
+    
 
     snake.forEach((position, index) => {
         if (index == snake.length - 1) {
@@ -78,6 +85,8 @@ const drawSnake = () => {
 
         ctx.fillRect(position.x, position.y, size, size)
     })
+     
+    ctx.shadowBlur=0
 }
 
 // Função para mover a cobra
@@ -102,13 +111,17 @@ const moveSnake = () => {
         snake.push({ x: head.x, y: head.y - size })
     }
 
+    if (direction == "up" || "down" || "right" || "left"){
+        audioBack.play()
+    }
+
     snake.shift()
 }
 
 // Função para desenhar a grade do jogo
 const drawGrid = () => {
     ctx.lineWidth = 1.5
-    ctx.strokeStyle = "white" // Cor das linhas da grade
+    ctx.strokeStyle = "#1f1f1f" // Cor das linhas da grade
 
     for (let i = 30; i < canvas.width; i += 30) {
         ctx.beginPath()
@@ -184,6 +197,7 @@ const checkCollision = () => {
 // Função chamada quando o jogo acaba
 const gameOver = () => {
     direction = undefined;
+    audioBack.pause();
 
     // Reinicia o jogo após um pequeno atraso
     setTimeout(() => {
